@@ -4,6 +4,7 @@
   become_method: sudo
   command: "id -u {{ cuckoo_user }}"
   register: user_exists
+  failed_when: user_exists.rc != 1
 
 - name: Create "{{ cuckoo_user }}" group
   become: true
