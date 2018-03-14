@@ -56,7 +56,6 @@
 - name: Ensures /var/log/suricata dir exists
   become: true
   become_method: sudo
-  become_user: "{{ cuckoo_user }}"
   file:
     path: /var/log/suricata
     state: directory
@@ -82,6 +81,13 @@
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
     mode: 0775
+
+- name: Ensures /var/run/suricata dir exists
+  become: true
+  become_method: sudo
+  file:
+    path: /var/run/suricata
+    state: directory
 
 - name: Change owner of /var/run/suricata folder
   become: true
