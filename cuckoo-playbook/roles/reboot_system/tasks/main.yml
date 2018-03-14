@@ -1,0 +1,118 @@
+---
+- name: Reboot server
+  become: true
+  become_method: sudo
+  shell: reboot
+  async: 0
+  poll: 0
+
+- name: Waiting for server to come back
+  local_action: wait_for host={{ ansible_host }} state=started
+
+- name: Remove vboxnet0
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif remove vboxnet0
+  ignore_errors: true
+
+- name: Remove vboxnet1
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif remove vboxnet1
+  ignore_errors: true
+
+- name: Create vboxnet0
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif create
+
+- name: Configure vboxnet0
+  become: true
+  become_method: sudo
+  command: ifconfig vboxnet0 192.168.56.1 netmask 255.255.255.0 broadcast 192.168.56.255 up
+
+- name: Create vboxnet1
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif create
+
+- name: Configure vboxnet1
+  become: true
+  become_method: sudo
+  command: ifconfig vboxnet1 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.255 up
+
+- name: Enable IPv4 forward
+  become: true
+  become_method: sudo
+  command: "sysctl -w net.ipv4.ip_forward=1"
+
+- name: Add Iptables rule [ 1 / 3 ]
+  become: true
+  become_method: sudo
+  command: "iptables -A FORWARD -s 192.168.56.0/24 -j ACCEPT"
+
+- name: Add Iptables rule [ 2 / 3 ]
+  become: true
+  become_method: sudo
+  command: "iptables -A FORWARD -s 192.168.57.0/24 -j ACCEPT"
+
+- name: Add Iptables rule [ 3 / 3 ]
+  become: true
+  become_method: sudo
+  command: "iptables -A POSTROUTING -t nat -o enp2s0 -j MASQUERADE"
+
+- name: Copy local Cuckoo configuration files to {{ cwd }}/conf
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  copy:
+    src: "{{ item }}"
+    dest: "{{ cwd }}/conf"
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0644
+  with_fileglob:
+    - ../cuckoo_configuration_files/*
+
+- name: Start Suricata IDS
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: suricata -D --user=cuckoo --group=cuckoo --unix-socket=cuckoo.socket
+
+- name: Start molochcapture
+  become: true
+  become_method: sudo
+  shell: systemctl start molochcapture.service
+
+- name: Start molochviewer
+  become: true
+  become_method: sudo
+  shell: systemctl start molochviewer.service
+
+- name: Start Cuckoo Sandbox
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo -d >/dev/null 2>&1 &"
+
+- name: Start Cuckoo Rooter
+  become: true
+  become_method: sudo
+  shell: "nohup /opt/cuckoo/bin/cuckoo rooter >/dev/null 2>&1 &"
+
+- name: Start Cuckoo Django Web Interface
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo web runserver 0.0.0.0:8080 >/dev/null 2>&1 &"
+
+- name: Start Cuckoo API
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo api --host 0.0.0.0 --port 8081 >/dev/null 2>&1 &"

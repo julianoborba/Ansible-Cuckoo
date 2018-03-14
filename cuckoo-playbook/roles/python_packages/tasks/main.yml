@@ -1,0 +1,91 @@
+---
+- name: Install pyvmomi package
+  become: true
+  become_method: sudo
+  pip:
+    name: pyvmomi
+    state: latest
+
+- name: Install pydeep package
+  become: true
+  become_method: sudo
+  pip:
+    name: pydeep
+    state: latest
+
+- name: Install m2crypto package
+  become: true
+  become_method: sudo
+  pip:
+    name: m2crypto
+    state: latest
+
+- name: Install mitmproxy package
+  become: true
+  become_method: sudo
+  pip:
+    name: mitmproxy
+    state: latest
+
+- name: Install pillow package
+  become: true
+  become_method: sudo
+  pip:
+    name: pillow
+    state: latest
+
+- name: Install pytesseract package
+  become: true
+  become_method: sudo
+  pip:
+    name: pytesseract
+    state: latest
+
+- name: Install protobuf package
+  become: true
+  become_method: sudo
+  pip:
+    name: protobuf
+    state: latest
+
+- name: Install sflock package
+  become: true
+  become_method: sudo
+  pip:
+    name: sflock
+    state: latest
+
+- name: Install distorm3 package
+  become: true
+  become_method: sudo
+  pip:
+    name: distorm3
+    state: latest
+
+- name: Install pycrypto package
+  become: true
+  become_method: sudo
+  pip:
+    name: pycrypto
+    state: latest
+
+- name: Install openpyxl package
+  become: true
+  become_method: sudo
+  pip:
+    name: openpyxl
+    state: latest
+
+- name: Install ujson package
+  become: true
+  become_method: sudo
+  pip:
+    name: ujson
+    state: latest
+
+- name: Install yara-python package
+  become: true
+  become_method: sudo
+  pip:
+    name: yara-python
+    state: latest

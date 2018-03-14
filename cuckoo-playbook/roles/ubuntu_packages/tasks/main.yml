@@ -1,0 +1,486 @@
+---
+- name: Install build-essential package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: build-essential
+    state: present
+    update_cache: false
+
+- name: Install python package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: python
+    state: present
+    update_cache: false
+
+- name: Install python-pip package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: python-pip
+    state: present
+    update_cache: false
+
+- name: Install python-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: python-dev
+    state: present
+    update_cache: false
+
+- name: Install pyhton-virtualenv package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: python-virtualenv
+    state: present
+    update_cache: false
+
+- name: Install pyhton-setuptools package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: python-setuptools
+    state: present
+    update_cache: false
+
+- name: Install libffi-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libffi-dev
+    state: present
+    update_cache: false
+
+- name: Install libssl-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libssl-dev
+    state: present
+    update_cache: false
+
+- name: Install libxml2-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libxml2-dev
+    state: present
+    update_cache: false
+
+- name: Install libxslt1-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libxslt1-dev
+    state: present
+    update_cache: false
+
+- name: Install libjpeg-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libjpeg-dev
+    state: present
+    update_cache: false
+
+- name: Install mongodb package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: mongodb
+    state: present
+    update_cache: false
+
+- name: Install qemu-kvm package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: qemu-kvm
+    state: present
+    update_cache: false
+
+- name: Install libvirt-bin package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libvirt-bin
+    state: present
+    update_cache: false
+
+- name: Install ubuntu-vm-builder package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: ubuntu-vm-builder
+    state: present
+    update_cache: false
+
+- name: Install bridge-utils package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: bridge-utils
+    state: present
+    update_cache: false
+
+- name: Install pyhton-libvirt package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: python-libvirt
+    state: present
+    update_cache: false
+
+- name: Install ssdeep package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: ssdeep
+    state: present
+    update_cache: false
+
+- name: Install libfuzzy-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libfuzzy-dev
+    state: present
+    update_cache: false
+
+- name: Install zlib1g-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: zlib1g-dev
+    state: present
+    update_cache: false
+
+- name: Install swig package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: swig
+    state: present
+    update_cache: false
+
+- name: Install tcpdump package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: tcpdump
+    state: present
+    update_cache: false
+
+- name: Install apparmor-utils package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: apparmor-utils
+    state: present
+    update_cache: false
+
+- name: Install libcap2-bin package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libcap2-bin
+    state: present
+    update_cache: false
+
+- name: Install postgresql package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: postgresql
+    state: present
+    update_cache: false
+
+- name: Install postgresql-contrib package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: postgresql-contrib
+    state: present
+    update_cache: false
+
+- name: Install libpq-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libpq-dev
+    state: present
+    update_cache: false
+
+- name: Install python-psycopg2 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: python-psycopg2
+    state: present
+    update_cache: false
+
+- name: Install p7zip-full package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: p7zip-full
+    state: present
+    update_cache: false
+
+- name: Install rar package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: rar
+    state: present
+    update_cache: false
+
+- name: Install unace-nonfree package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: unace-nonfree
+    state: present
+    update_cache: false
+
+- name: Install cabextract package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: cabextract
+    state: present
+    update_cache: false
+
+- name: Install libc6:i386 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libc6:i386
+    state: present
+    update_cache: false
+
+- name: Install libstdc++6:i386 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libstdc++6:i386
+    state: present
+    update_cache: false
+    
+- name: Install libgcc1:i386 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libgcc1:i386
+    state: present
+    update_cache: false
+
+- name: Install zlib1g:i386 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: zlib1g:i386
+    state: present
+    update_cache: false
+
+- name: Install libncurses5:i386 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libncurses5:i386
+    state: present
+    update_cache: false
+    
+- name: Install lib32z1 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: lib32z1
+    state: present
+    update_cache: false
+
+- name: Install libc6-dev-i386 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libc6-dev-i386
+    state: present
+    update_cache: false
+
+- name: Install androguard package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: androguard
+    state: present
+    update_cache: false
+
+- name: Install dkms package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: dkms
+    state: present
+    update_cache: false
+
+- name: Install autoconf package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: autoconf
+    state: present
+    update_cache: false
+
+- name: Install libtool package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libtool
+    state: present
+    update_cache: false
+
+- name: Install libjansson-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libjansson-dev
+    state: present
+    update_cache: false
+
+- name: Install libmagic-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libmagic-dev
+
+- name: Install libpcre3-dbg package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libpcre3-dbg
+    state: present
+    update_cache: false
+
+- name: Install libpcre3-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libpcre3-dev
+    state: present
+    update_cache: false
+
+- name: Install automake package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: automake
+    state: present
+    update_cache: false
+
+- name: Install libpcap-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libpcap-dev
+    state: present
+    update_cache: false
+
+- name: Install libnet1-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libnet1-dev
+    state: present
+    update_cache: false
+
+- name: Install libyaml-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libyaml-dev
+    state: present
+    update_cache: false
+
+- name: Install libcap-ng-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libcap-ng-dev
+    state: present
+    update_cache: false
+
+- name: Install libjansson4 package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libjansson4
+    state: present
+    update_cache: false
+
+- name: Install pkg-config package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: pkg-config
+    state: present
+    update_cache: false
+
+- name: Install oinkmaster package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: oinkmaster
+    state: present
+    update_cache: false
+
+- name: Install libcommon-sense-perl package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libcommon-sense-perl
+    state: present
+    update_cache: false
+
+- name: Install libjson-perl package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libjson-perl
+    state: present
+    update_cache: false
+
+- name: Install libjson-xs-perl package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libjson-xs-perl
+    state: present
+    update_cache: false
+
+- name: Install libtypes-serialiser-perl package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libtypes-serialiser-perl
+    state: present
+    update_cache: false
+
+- name: Install libyaml-dev package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libyaml-dev
+    state: present
+    update_cache: false
+
+- name: Install libyaml-doc package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: libyaml-doc
+    state: present
+    update_cache: false

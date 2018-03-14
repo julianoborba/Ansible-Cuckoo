@@ -1,0 +1,10 @@
+---
+- name: Reconfigure date and time [ 1 / 2 ]
+  become: true
+  become_method: sudo
+  command: "timedatectl set-timezone {{ timezone }}"
+
+- name: Reconfigure date and time [ 2 / 2 ]
+  become: true
+  become_method: sudo
+  command: "dpkg-reconfigure --frontend noninteractive tzdata"

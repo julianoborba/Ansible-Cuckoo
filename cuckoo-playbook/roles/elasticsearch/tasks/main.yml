@@ -1,0 +1,31 @@
+---
+- name: Add Elasticsearch APT key
+  become: true
+  become_method: sudo
+  apt_key:
+    url: "https://packages.elastic.co/GPG-KEY-elasticsearch"
+    state: present
+
+- name: Add Elasticsearch repository
+  become: true
+  become_method: sudo
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/5.x/apt stable main
+    state: present
+    update_cache: false
+
+- name: Install Elasticsearch
+  become: true
+  become_method: sudo
+  apt:
+    name: elasticsearch
+    state: latest
+    update_cache: true
+
+- name: Enable and restart Elasticsearch service
+  become: true
+  become_method: sudo
+  service:
+    name: elasticsearch
+    state: restarted
+    enabled: yes

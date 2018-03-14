@@ -1,0 +1,23 @@
+---
+- name: Add Java repo to APT sources
+  become: true
+  become_method: sudo
+  apt_repository:
+    repo: ppa:webupd8team/java
+    state: present
+    update_cache: false
+
+- name: Accept Oracle license before JDK installation
+  become: true
+  become_method: sudo
+  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections; echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+  args:
+    creates: /usr/lib/jvm/java-8-oracle
+
+- name: Install Java
+  become: true
+  become_method: sudo
+  apt:
+    name: "oracle-java8-installer"
+    state: latest
+    update_cache: true

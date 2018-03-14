@@ -1,0 +1,7 @@
+---
+- name: Reboot server
+  become: true
+  become_method: sudo
+  shell: reboot
+  async: 0
+  poll: 0

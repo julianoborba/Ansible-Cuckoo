@@ -1,0 +1,37 @@
+---
+- name: Create "{{ cuckoo_user }}" group
+  become: true
+  become_method: sudo
+  group:
+    name: "{{ cuckoo_user }}"
+    state: present
+
+- name: Create "{{ cuckoo_user }}" user
+  become: true
+  become_method: sudo
+  user:
+    name: "{{ cuckoo_user }}"
+    state: present
+    group: "{{ cuckoo_user }}"
+    groups: sudo,{{ cuckoo_user }}
+    shell: /bin/bash
+    home: "/home/{{ cuckoo_user }}"
+
+- name: Allow "{{ cuckoo_user }}" group to have passwordless sudo
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%{{ cuckoo_user }}"
+    line: "%{{ cuckoo_user }} ALL=(ALL) NOPASSWD: ALL"
+    validate: visudo -cf %s
+
+- name: Ensures /home/{{ cuckoo_user }} dir exists
+  become: true
+  become_method: sudo
+  file:
+    path: "/home/{{ cuckoo_user }}"
+    state: directory
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"

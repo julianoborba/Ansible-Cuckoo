@@ -1,0 +1,25 @@
+---
+- name: Download and uncompress Volatility source
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  unarchive:
+    src: https://github.com/volatilityfoundation/volatility/archive/{{ volatility_ver }}.tar.gz
+    dest: "{{ build_dir }}"
+    remote_src: true
+
+- name: Build Volatility
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: python setup.py build
+  args:
+    chdir: "{{ build_dir }}/volatility-{{ volatility_ver }}"
+
+- name: Install Volatility
+  become: true
+  become_method: sudo
+  shell: python setup.py install
+  args:
+    chdir: "{{ build_dir }}/volatility-{{ volatility_ver }}"
+    creates: /bin/vol.py

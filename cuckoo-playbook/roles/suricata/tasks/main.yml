@@ -1,0 +1,188 @@
+---
+- name: Download and uncompress Suricata source
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  unarchive:
+    src: http://www.openinfosecfoundation.org/download/suricata-{{ suricata_ver }}.tar.gz
+    dest: "{{ build_dir }}"
+    remote_src: true
+
+- name: Build Suricata
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: ./configure --enable-nfqueue --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+  args:
+    chdir: "{{ build_dir }}/suricata-{{ suricata_ver }}"
+
+- name: Make Suricata
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: make
+  args:
+    chdir: "{{ build_dir }}/suricata-{{ suricata_ver }}"
+
+- name: Install Suricata
+  become: true
+  become_method: sudo
+  shell: make install
+  args:
+    chdir: "{{ build_dir }}/suricata-{{ suricata_ver }}"
+
+- name: Install Suricata default configurations
+  become: true
+  become_method: sudo
+  shell: make install-conf
+  args:
+    chdir: "{{ build_dir }}/suricata-{{ suricata_ver }}"
+
+- name: Install Suricata default rules
+  become: true
+  become_method: sudo
+  shell: make install-rules
+  args:
+    chdir: "{{ build_dir }}/suricata-{{ suricata_ver }}"
+
+- name: Install suricatasc Python client
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "{{ cuckoo_dir }}/bin/python setup.py install"
+  args:
+    chdir: "{{ build_dir }}/suricata-{{ suricata_ver }}/scripts/suricatasc"
+
+- name: Ensures /var/log/suricata dir exists
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  file:
+    path: /var/log/suricata
+    state: directory
+
+- name: Change owner of /var/log/suricata folder
+  become: true
+  become_method: sudo
+  file:
+    path: "/var/log/suricata"
+    state: directory
+    recurse: yes
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0775
+
+- name: Change owner of /etc/suricata folder
+  become: true
+  become_method: sudo
+  file:
+    path: "/etc/suricata"
+    state: directory
+    recurse: yes
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0775
+
+- name: Change owner of /var/run/suricata folder
+  become: true
+  become_method: sudo
+  file:
+    path: "/var/run/suricata"
+    state: directory
+    recurse: yes
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0775
+
+- name: Backup suricata.yaml file
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: mv /etc/suricata/suricata.yaml /etc/suricata/suricata.yaml.original
+
+- name: Copy local suricata.yaml to /etc/suricata
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/suricata"
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0644
+  with_fileglob:
+    - ../files/suricata.yaml
+
+- name: Backup oinkmaster.conf file
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: mv /etc/oinkmaster.conf /etc/oinkmaster.conf.original
+
+- name: Copy local oinkmaster.conf to /etc
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  copy:
+    src: "{{ item }}"
+    dest: "/etc"
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0644
+  with_fileglob:
+    - ../files/oinkmaster.conf
+
+- name: Ensures /etc/emergingthreats/rules dir exists
+  become: true
+  become_method: sudo
+  file:
+    path: /etc/emergingthreats/rules
+    state: directory
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0775
+
+- name: Extract emergingthreats rules
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: oinkmaster -u http://rules.emergingthreats.net/open/suricata/emerging.rules.tar.gz -o /etc/emergingthreats/rules
+
+- name: Find emergingthreats rules
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  find:
+    paths: /etc/emergingthreats/rules
+    patterns: '*'
+    recurse: false
+  register: emergingthreats_files
+
+- name: Create link to emergingthreats rules
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  file:
+    src: /etc/emergingthreats/rules/{{ item }}
+    dest: /etc/suricata/rules/{{ item }}
+    state: link
+    force: true
+  with_items: "{{ emergingthreats_files }}"
+
+- name: Set crontab to update Suricata emergingthreats rules
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  cron:
+    name: "Update Suricata rules"
+    minute: "0"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    job: "oinkmaster -u http://rules.emergingthreats.net/open/suricata/emerging.rules.tar.gz -o /etc/emergingthreats/rules"
+
+- name: Start Suricata IDS
+  become: true
+  become_method: sudo
+  shell: suricata -D --user=cuckoo --group=cuckoo --unix-socket=cuckoo.socket

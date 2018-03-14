@@ -1,0 +1,133 @@
+---
+- name: Check if Android SDK is in place
+  stat:
+    path: /home/cuckoo/android-sdk-linux
+  register: android_sdk_linux
+
+- name: Download and uncompress Android SDK
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  unarchive:
+    src: http://dl.google.com/android/android-sdk_{{ sdk_ver }}-linux.tgz
+    dest: "/home/cuckoo"
+    remote_src: true
+  when: android_sdk_linux.stat.isdir is not defined
+
+- name: Check if build-tools is in place
+  stat:
+    path: /home/cuckoo/android-sdk-linux/build-tools
+  register: android_sdk_linux_build_tools
+
+- name: Install SDK components [ 1 / 5 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "echo yes | ./android update sdk --no-ui --all --filter build-tools-27.0.3"
+  args:
+    executable: /bin/bash
+    chdir: /home/cuckoo/android-sdk-linux/tools
+  when: android_sdk_linux_build_tools.stat.isdir is not defined
+
+- name: Check if platform-tools is in place
+  stat:
+    path: /home/cuckoo/android-sdk-linux/platform-tools
+  register: android_sdk_linux_platform_tools
+
+- name: Install SDK components [ 2 / 5 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "echo yes | ./android update sdk --no-ui --all --filter platform-tools"
+  args:
+    executable: /bin/bash
+    chdir: /home/cuckoo/android-sdk-linux/tools
+  when: android_sdk_linux_platform_tools.stat.isdir is not defined
+
+- name: Check if tools is in place
+  stat:
+    path: /home/cuckoo/android-sdk-linux/tools
+  register: android_sdk_linux_tools
+
+- name: Install SDK components [ 3 / 5 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "echo yes | ./android update sdk --no-ui --all --filter tools"
+  args:
+    executable: /bin/bash
+    chdir: /home/cuckoo/android-sdk-linux/tools
+  when: android_sdk_linux_tools.stat.isdir is not defined
+
+- name: Check if platform android-16 is in place
+  stat:
+    path: /home/cuckoo/android-sdk-linux/platforms/android-16
+  register: android_sdk_linux_platforms_android_16
+
+- name: Install SDK components [ 4 / 5 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "echo yes | ./android update sdk --no-ui --all --filter android-16"
+  args:
+    executable: /bin/bash
+    chdir: /home/cuckoo/android-sdk-linux/tools
+  when: android_sdk_linux_platforms_android_16.stat.isdir is not defined
+
+- name: Check if sys-img-armeabi-v7a-android-16 is in place
+  stat:
+    path: /home/cuckoo/android-sdk-linux/system-images/android-16/default/armeabi-v7a
+  register: android_sdk_linux_android_16_armeabi_v7a
+
+- name: Install SDK components [ 5 / 5 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "echo yes | ./android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-16"
+  args:
+    executable: /bin/bash
+    chdir: /home/cuckoo/android-sdk-linux/tools
+  when: android_sdk_linux_android_16_armeabi_v7a.stat.isdir is not defined
+
+- name: Check if AVD is in place
+  stat:
+    path: /home/cuckoo/.android/avd/cuckoo-bird.avd
+  register: android_avd_cuckoo_bird
+
+- name: Create default AVD with name "cuckoo-bird"
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "echo no | ./android create avd -t 1 -n cuckoo-bird --abi default/armeabi-v7a"
+  args:
+    executable: /bin/bash
+    chdir: /home/cuckoo/android-sdk-linux/tools
+  when: android_avd_cuckoo_bird.stat.isdir is not defined
+
+- name: Information...
+  debug:
+    msg: "You had to setup your AVD guest manually, check /home/cuckoo/android-sdk-linux/CuckooDroid"
+
+- name: Ensures /home/cuckoo/android-sdk-linux/CuckooDroid dir exists
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  file:
+    path: /home/cuckoo/android-sdk-linux/CuckooDroid
+    state: directory
+
+- name: "Looking for files under CuckooDroid dir"
+  command: ls /home/cuckoo/android-sdk-linux/CuckooDroid
+  register: ls_cuckoodroid_dir_result
+
+- name: Copy local CuckooDroid util files to /home/cuckoo/android-sdk-linux/CuckooDroid
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  copy:
+    src: "../files/CuckooDroid/"
+    dest: "/home/cuckoo/android-sdk-linux/CuckooDroid"
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0644
+  when: ls_cuckoodroid_dir_result.stdout == ""

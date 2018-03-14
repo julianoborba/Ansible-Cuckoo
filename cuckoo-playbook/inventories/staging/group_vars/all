@@ -1,0 +1,32 @@
+---
+##### Cuckoo Sandbox artifacts ############
+
+# User
+cuckoo_user: cuckoo
+
+# Folders
+cwd: ~/.cuckoo
+build_dir: /usr/local/src/build
+
+# Virtual environment
+cuckoo_dir: /opt/cuckoo
+
+##### Modules versions ####################
+
+cuckoo_ver: 2.0.5.3
+yara_ver: 3.7.1
+volatility_ver: 2.6
+suricata_ver: 4.0.4
+sdk_ver: r24.4
+moloch_ver: 0.50.0-1
+virtualbox_ver: 5.1
+virtualbox_ext_pack_ver: 5.1.32-120294
+
+##### Cuckoo Sandbox guest VM #############
+
+cuckoo_appliance: /home/cuckoo1.ova
+cuckoo_vm_label: cuckoo1
+
+##### Date & Time #########################
+
+timezone: America/Sao_Paulo

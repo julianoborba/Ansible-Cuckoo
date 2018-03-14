@@ -1,0 +1,72 @@
+---
+- name: Check that the Moloch deb package exists
+  stat:
+    path: /tmp/moloch_{{ moloch_ver }}_amd64.deb
+  register: moloch_deb_package_file
+
+- name: Download Moloch deb package
+  become: true
+  become_method: sudo
+  get_url: url=https://files.molo.ch/builds/ubuntu-16.04/moloch_{{ moloch_ver }}_amd64.deb dest=/tmp mode=0644
+  when: moloch_deb_package_file.stat.exists == false 
+
+- name: Install Moloch
+  become: true
+  become_method: sudo
+  shell: "dpkg -i /tmp/moloch_{{ moloch_ver }}_amd64.deb"
+  register: install_moloch_result
+  ignore_errors: true
+
+- name: Install Moloch
+  become: true
+  become_method: sudo
+  shell: "apt install -f"
+  when: "'error' in install_moloch_result.stderr"
+
+- name: Install Moloch
+  become: true
+  become_method: sudo
+  shell: "dpkg -i /tmp/moloch_{{ moloch_ver }}_amd64.deb"
+  when: "'error' in install_moloch_result.stderr"
+
+- name: Information...
+  debug:
+    msg: "READ /data/moloch/README.txt and RUN sudo /data/moloch/bin/Configure"
+
+  # sudo /data/moloch/bin/Configure
+
+- name: Wait for /data/moloch/bin/Configure execution
+  pause:
+
+- name: Configure Moloch initialization
+  become: true
+  become_method: sudo
+  shell: "/data/moloch/db/db.pl http://localhost:9200 init"
+
+- name: Configure Moloch user
+  become: true
+  become_method: sudo
+  shell: "/data/moloch/bin/moloch_add_user.sh cuckoo cuckoo cuckoo --admin"
+
+- name: Enable and restart molochcapture service
+  become: true
+  become_method: sudo
+  service:
+    name: molochcapture
+    state: restarted
+    enabled: yes
+
+- name: Enable and restart molochviewer service
+  become: true
+  become_method: sudo
+  service:
+    name: molochviewer
+    state: restarted
+    enabled: yes
+
+  # cat /data/moloch/logs/viewer.log
+  # cat /data/moloch/logs/capture.log
+
+  # http://localhost:8005
+  # user: cuckoo
+  # password: cuckoo

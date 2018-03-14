@@ -1,0 +1,157 @@
+---
+- name: Configure the Oracle APT key
+  become: true
+  become_method: sudo
+  apt_key: url={{ item }} state=present
+  with_items:
+    - "https://www.virtualbox.org/download/oracle_vbox.asc"
+    - "https://www.virtualbox.org/download/oracle_vbox_2016.asc"
+
+- name: Configure the VirtualBox APT repositories
+  become: true
+  become_method: sudo
+  apt_repository:
+    repo: "deb http://download.virtualbox.org/virtualbox/debian {{ distribution }} contrib"
+    state: present
+
+- name: Install VirtualBox
+  become: true
+  become_method: sudo
+  apt:
+    pkg: "virtualbox-{{ virtualbox_ver }}"
+    state: present
+    update_cache: yes
+
+- name: Check that the Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_ext_pack_ver }}.vbox-extpack exists
+  stat:
+    path: /tmp/Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_ext_pack_ver }}.vbox-extpack
+  register: virtualbox_ext_pack_file
+    
+- name: Download Virtualbox Extpack
+  become: true
+  become_method: sudo
+  get_url: url=http://download.virtualbox.org/virtualbox/{{ virtualbox_ext_pack_ver.split('-')[0] }}/Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_ext_pack_ver }}.vbox-extpack dest=/tmp mode=0644
+  when: virtualbox_ext_pack_file.stat.exists == false 
+
+- name: Install Virtualbox Extpack
+  become: true
+  become_method: sudo
+  shell: "echo y | vboxmanage extpack install --replace /tmp/Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_ext_pack_ver }}.vbox-extpack"
+  args:
+    creates: /usr/lib/virtualbox/ExtensionPacks/Oracle_VM_VirtualBox_Extension_Pack
+
+- name: Add "{{ cuckoo_user }}" user to "vboxusers" group
+  become: true
+  become_method: sudo
+  user:
+    name: "{{ cuckoo_user }}"
+    groups: vboxusers,sudo,{{ cuckoo_user }}
+    append: false
+
+- name: Change owner of {{ cuckoo_appliance }} file to "{{ cuckoo_user }}"
+  become: true
+  become_method: sudo
+  file:
+    path: "{{ cuckoo_appliance }}"
+    state: file
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+
+- name: Verify if OVA is imported
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: vboxmanage list vms
+  register: vm_name
+
+- name: Import pre-configured OVA/OVF file
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: "vboxmanage import {{ cuckoo_appliance }}"
+  when: '"cuckoo1" not in vm_name.stdout'
+
+- name: Remove vboxnet0
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif remove vboxnet0
+  ignore_errors: true
+
+- name: Remove vboxnet1
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif remove vboxnet1
+  ignore_errors: true
+
+- name: Create vboxnet0 [ 1 / 2 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif create
+
+- name: Create vboxnet0 [ 2 / 2 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage modifyvm {{ cuckoo_vm_label }} --nic1 hostonly --nictype1 82540EM --hostonlyadapter1 vboxnet0
+
+- name: Configure vboxnet0
+  become: true
+  become_method: sudo
+  command: ifconfig vboxnet0 192.168.56.1 netmask 255.255.255.0 broadcast 192.168.56.255 up
+
+- name: Create vboxnet1 [ 1 / 2 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif create
+
+- name: Create vboxnet1 [ 2 / 2 ]
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage modifyvm {{ cuckoo_vm_label }} --nic2 hostonly --nictype2 82540EM --hostonlyadapter2 vboxnet1
+
+- name: Configure vboxnet1
+  become: true
+  become_method: sudo
+  command: ifconfig vboxnet1 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.255 up
+
+- name: Start VM {{ cuckoo_vm_label }}
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: "vboxmanage startvm {{ cuckoo_vm_label }} --type headless"
+
+- name: Wait for VM get fully booted
+  pause:
+    minutes: 3
+
+- name: Check for snapshots from {{ cuckoo_vm_label }}
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: "vboxmanage snapshot {{ cuckoo_vm_label }} list"
+  register: vm_snapshots
+  failed_when: vm_snapshots.rc != 1
+
+- name: Take a VM snapshot for {{ cuckoo_vm_label }}
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: "vboxmanage snapshot {{ cuckoo_vm_label }} take {{ cuckoo_vm_label }}-snapshot1 --pause"
+  when: "'does not have' in vm_snapshots.stdout"
+
+- name: Poweroff VM {{ cuckoo_vm_label }}
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: "vboxmanage controlvm {{ cuckoo_vm_label }} poweroff"
+
+- name: Restore VM snapshot for {{ cuckoo_vm_label }}
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: "vboxmanage snapshot {{ cuckoo_vm_label }} restorecurrent"

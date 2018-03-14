@@ -1,0 +1,24 @@
+# run [ ansible-playbook -i inventories/staging site.yml --extra-vars "distribution=artful"    ] for local  setup
+# run [ ansible-playbook -i inventories/production site.yml --extra-vars "distribution=artful" ] for remote setup
+---
+- hosts: all
+  gather_facts: false
+  roles:
+    - python
+    - cuckoo_user
+    - build_directory
+    - ubuntu_packages
+    - python_packages
+    - postgresql
+    - java
+    - elasticsearch
+    - android_virtual_device
+    - virtualbox
+    - cuckoo
+    - yara
+    - volatility
+    - suricata
+    - moloch
+    - network
+    - date_time
+    - start_up_cuckoo

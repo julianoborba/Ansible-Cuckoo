@@ -1,0 +1,24 @@
+---
+- name: Ensure database is created
+  become: true
+  become_method: sudo
+  become_user: "postgres"
+  postgresql_db: name={{ cuckoo_user }}
+
+- name: Ensure user has access to database
+  become: true
+  become_method: sudo
+  become_user: "postgres"
+  postgresql_user: db={{ cuckoo_user }} name={{ cuckoo_user }} password={{ cuckoo_user }} priv=ALL
+
+- name: Ensure user does not have unnecessary privilege
+  become: true
+  become_method: sudo
+  become_user: "postgres"
+  postgresql_user: name={{ cuckoo_user }} role_attr_flags=NOSUPERUSER,NOCREATEDB
+
+- name: Ensure no other user can access the database
+  become: true
+  become_method: sudo
+  become_user: "postgres"
+  postgresql_privs: db={{ cuckoo_user }} role=PUBLIC type=database priv=ALL state=absent

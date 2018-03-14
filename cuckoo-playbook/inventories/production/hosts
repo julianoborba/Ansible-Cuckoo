@@ -1,0 +1,2 @@
+[all]
+remotehost ansible_host=HOST ansible_ssh_user=ADMIN ansible_ssh_pass=PASSWORD ansible_sudo_pass=PASSWORD

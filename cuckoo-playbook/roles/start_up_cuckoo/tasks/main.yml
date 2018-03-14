@@ -1,0 +1,23 @@
+---
+- name: Start Cuckoo Sandbox
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo -d >/dev/null 2>&1 &"
+
+- name: Start Cuckoo Rooter
+  become: true
+  become_method: sudo
+  shell: "nohup /opt/cuckoo/bin/cuckoo rooter >/dev/null 2>&1 &"
+
+- name: Start Cuckoo Django Web Interface
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo web runserver 0.0.0.0:8080 >/dev/null 2>&1 &"
+
+- name: Start Cuckoo API
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo api --host 0.0.0.0 --port 8081 >/dev/null 2>&1 &"

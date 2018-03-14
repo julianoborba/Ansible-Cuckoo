@@ -1,0 +1,10 @@
+---
+- name: Create build directory in {{ build_dir }}
+  become: true
+  become_method: sudo
+  file:
+    path: "{{ build_dir }}"
+    state: directory
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0755
