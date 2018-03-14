@@ -12,7 +12,7 @@
   group:
     name: "{{ cuckoo_user }}"
     state: present
-  when: '"no such user" in user_exists.stdout'
+  when: '"id" in user_exists.stdout'
 
 - name: Create "{{ cuckoo_user }}" user
   become: true
@@ -24,7 +24,7 @@
     groups: sudo,{{ cuckoo_user }}
     shell: /bin/bash
     home: "/home/{{ cuckoo_user }}"
-  when: '"no such user" in user_exists.stdout'
+  when: '"id" in user_exists.stdout'
 
 - name: Allow "{{ cuckoo_user }}" group to have passwordless sudo
   become: yes
@@ -35,7 +35,7 @@
     regexp: "^%{{ cuckoo_user }}"
     line: "%{{ cuckoo_user }} ALL=(ALL) NOPASSWD: ALL"
     validate: visudo -cf %s
-  when: '"no such user" in user_exists.stdout'
+  when: '"id" in user_exists.stdout'
 
 - name: Ensures /home/{{ cuckoo_user }} dir exists
   become: true
@@ -45,4 +45,4 @@
     state: directory
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
-  when: '"no such user" in user_exists.stdout'
+  when: '"id" in user_exists.stdout'
