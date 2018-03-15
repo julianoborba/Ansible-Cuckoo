@@ -1,10 +1,10 @@
 ---
 - name: Check if "{{ cuckoo_user }}" user exists
-  become: true
-  become_method: sudo
-  shell: "id -u {{ cuckoo_user }}"
-  register: user_exists
-  failed_when: user_exists.rc != 1
+  getent: 
+    key: "{{ cuckoo_user }}"
+    database: passwd 
+    fail_key: false 
+  register: getent_passwd_result
 
 - name: Create "{{ cuckoo_user }}" group
   become: true
@@ -12,7 +12,7 @@
   group:
     name: "{{ cuckoo_user }}"
     state: present
-  #when: '"no such user" in user_exists.stdout'
+  when: '"{{ cuckoo_user }}" not in getent_passwd_result.stdout'
 
 - name: Create "{{ cuckoo_user }}" user
   become: true
@@ -24,7 +24,7 @@
     groups: sudo,{{ cuckoo_user }}
     shell: /bin/bash
     home: "/home/{{ cuckoo_user }}"
-  #when: '"no such user" in user_exists.stdout'
+  when: '"{{ cuckoo_user }}" not in getent_passwd_result.stdout'
 
 - name: Allow "{{ cuckoo_user }}" group to have passwordless sudo
   become: yes
@@ -35,7 +35,7 @@
     regexp: "^%{{ cuckoo_user }}"
     line: "%{{ cuckoo_user }} ALL=(ALL) NOPASSWD: ALL"
     validate: visudo -cf %s
-  #when: '"no such user" in user_exists.stdout'
+  when: '"{{ cuckoo_user }}" not in getent_passwd_result.stdout'
 
 - name: Ensures /home/{{ cuckoo_user }} dir exists
   become: true
@@ -45,4 +45,4 @@
     state: directory
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
-  #when: '"no such user" in user_exists.stdout'
+  when: '"{{ cuckoo_user }}" not in getent_passwd_result.stdout'
