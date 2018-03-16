@@ -47,6 +47,7 @@
     name: "{{ cuckoo_user }}"
     groups: vboxusers,sudo,{{ cuckoo_user }}
     append: false
+  when: getent_passwd[cuckoo_user] == none
 
 - name: Change owner of {{ cuckoo_appliance }} file to "{{ cuckoo_user }}"
   become: true
@@ -69,7 +70,7 @@
   become_method: sudo
   become_user: "{{ cuckoo_user }}"
   command: "vboxmanage import {{ cuckoo_appliance }}"
-  when: '"{{ cuckoo_vm_label }}" not in vm_name.stdout'
+  when: 'cuckoo_vm_label not in vm_name.stdout'
 
 - name: Remove vboxnet0
   become: true
