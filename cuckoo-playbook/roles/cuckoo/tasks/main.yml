@@ -1,12 +1,4 @@
 ---
-# - name: Add "{{ cuckoo_user }}" user to VM's groups
-#   become: true
-#   become_method: sudo
-#   user:
-#     name: "{{ cuckoo_user }}"
-#     groups: libvirtd,vboxusers,sudo,{{ cuckoo_user }} # take your choice
-#     append: false
-
 - name: Install Cuckoo into virtualenv - {{ cuckoo_dir }}
   become: true
   become_method: sudo
@@ -16,11 +8,6 @@
     - setuptools
     - psycopg2
     - cuckoo
-
-# - name: Download Cuckoo
-#   get_url:
-#     url: https://github.com/cuckoosandbox/cuckoo/archive/{{ cuckoo_ver }}.tar.gz
-#     dest: "{{ cuckoo_dir }}/cuckoo-{{ cuckoo_ver }}.tar.gz"
 
 - name: Change owner of {{ cuckoo_dir }} directory
   become: true

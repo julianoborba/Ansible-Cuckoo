@@ -84,12 +84,12 @@
   become_user: "{{ cuckoo_user }}"
   shell: suricata -D --user=cuckoo --group=cuckoo --unix-socket=cuckoo.socket
 
-- name: Start molochcapture
+- name: Start Moloch capture
   become: true
   become_method: sudo
   shell: systemctl start molochcapture.service
 
-- name: Start molochviewer
+- name: Start Moloch viewer
   become: true
   become_method: sudo
   shell: systemctl start molochviewer.service
@@ -103,7 +103,7 @@
 - name: Start Cuckoo Rooter
   become: true
   become_method: sudo
-  shell: "nohup /opt/cuckoo/bin/cuckoo rooter >/dev/null 2>&1 &"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo rooter >/dev/null 2>&1 &"
 
 - name: Start Cuckoo Django Web Interface
   become: true
