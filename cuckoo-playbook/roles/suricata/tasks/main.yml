@@ -127,7 +127,6 @@
 - name: Copy local oinkmaster.conf to /etc
   become: true
   become_method: sudo
-  become_user: "{{ cuckoo_user }}"
   copy:
     src: "{{ item }}"
     dest: "/etc"
