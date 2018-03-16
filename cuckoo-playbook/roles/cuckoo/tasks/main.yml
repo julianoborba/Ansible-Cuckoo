@@ -17,7 +17,7 @@
     state: directory
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
-    recurse: yes
+    recurse: true
 
 - name: Setup Cuckoo Working Directory - {{ cwd }}
   become: true

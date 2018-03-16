@@ -52,7 +52,7 @@
   service:
     name: molochcapture
     state: restarted
-    enabled: yes
+    enabled: true
 
 - name: Enable and restart Moloch viewer service
   become: true
@@ -60,4 +60,4 @@
   service:
     name: molochviewer
     state: restarted
-    enabled: yes
+    enabled: true

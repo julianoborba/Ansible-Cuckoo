@@ -20,7 +20,7 @@
   apt:
     pkg: "virtualbox-{{ virtualbox_ver }}"
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Check that the Oracle_VM_VirtualBox_Extension_Pack-{{ virtualbox_ext_pack_ver }}.vbox-extpack exists
   stat:
@@ -78,6 +78,23 @@
   command: vboxmanage hostonlyif remove vboxnet0
   ignore_errors: true
 
+- name: Create vboxnet0
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage hostonlyif create
+
+- name: Set vboxnet0 for {{ cuckoo_vm_label }}
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: vboxmanage modifyvm {{ cuckoo_vm_label }} --nic1 hostonly --nictype1 82540EM --hostonlyadapter1 vboxnet0
+
+- name: Configure vboxnet0 to be up
+  become: true
+  become_method: sudo
+  command: ifconfig vboxnet0 192.168.56.1 netmask 255.255.255.0 broadcast 192.168.56.255 up
+
 - name: Remove vboxnet1
   become: true
   become_method: sudo
@@ -85,36 +102,13 @@
   command: vboxmanage hostonlyif remove vboxnet1
   ignore_errors: true
 
-- name: Create vboxnet0 [ 1 / 2 ]
+- name: Create vboxnet1 for honeyd service usage if needed
   become: true
   become_method: sudo
   become_user: "{{ cuckoo_user }}"
   command: vboxmanage hostonlyif create
 
-- name: Create vboxnet0 [ 2 / 2 ]
-  become: true
-  become_method: sudo
-  become_user: "{{ cuckoo_user }}"
-  command: vboxmanage modifyvm {{ cuckoo_vm_label }} --nic1 hostonly --nictype1 82540EM --hostonlyadapter1 vboxnet0
-
-- name: Configure vboxnet0
-  become: true
-  become_method: sudo
-  command: ifconfig vboxnet0 192.168.56.1 netmask 255.255.255.0 broadcast 192.168.56.255 up
-
-- name: Create vboxnet1 [ 1 / 2 ]
-  become: true
-  become_method: sudo
-  become_user: "{{ cuckoo_user }}"
-  command: vboxmanage hostonlyif create
-
-- name: Create vboxnet1 [ 2 / 2 ]
-  become: true
-  become_method: sudo
-  become_user: "{{ cuckoo_user }}"
-  command: vboxmanage modifyvm {{ cuckoo_vm_label }} --nic2 hostonly --nictype2 82540EM --hostonlyadapter2 vboxnet1
-
-- name: Configure vboxnet1
+- name: Configure vboxnet1 to be up
   become: true
   become_method: sudo
   command: ifconfig vboxnet1 192.168.57.1 netmask 255.255.255.0 broadcast 192.168.57.255 up

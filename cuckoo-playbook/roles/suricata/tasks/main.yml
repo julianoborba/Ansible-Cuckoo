@@ -66,7 +66,7 @@
   file:
     path: "/var/log/suricata"
     state: directory
-    recurse: yes
+    recurse: true
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
     mode: 0775
@@ -77,7 +77,7 @@
   file:
     path: "/etc/suricata"
     state: directory
-    recurse: yes
+    recurse: true
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
     mode: 0775
@@ -95,7 +95,7 @@
   file:
     path: "/var/run/suricata"
     state: directory
-    recurse: yes
+    recurse: true
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
     mode: 0775
