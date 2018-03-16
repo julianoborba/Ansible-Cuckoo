@@ -47,7 +47,6 @@
     name: "{{ cuckoo_user }}"
     groups: vboxusers,sudo,{{ cuckoo_user }}
     append: false
-  when: getent_passwd[cuckoo_user] == none
 
 - name: Change owner of {{ cuckoo_appliance }} file to "{{ cuckoo_user }}"
   become: true
