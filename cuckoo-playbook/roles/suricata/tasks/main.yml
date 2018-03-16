@@ -122,7 +122,6 @@
 - name: Backup oinkmaster.conf file
   become: true
   become_method: sudo
-  become_user: "{{ cuckoo_user }}"
   command: mv /etc/oinkmaster.conf /etc/oinkmaster.conf.original
 
 - name: Copy local oinkmaster.conf to /etc
