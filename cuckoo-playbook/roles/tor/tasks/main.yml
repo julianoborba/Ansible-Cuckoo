@@ -25,12 +25,39 @@
   become_method: sudo
   command: "gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -"
 
-- name: Install Tor and Tor Keyring packages
+- name: Install deb.torproject.org-keyring package
+  become: true
+  become_method: sudo
   apt:
-    pkg: "{{ item }}"
+    pkg: "deb.torproject.org-keyring"
     state: latest
     update_cache: true
-  with_items: ["deb.torproject.org-keyring", "tor"]
+
+- name: Install tor package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: "tor"
+    state: latest
+    update_cache: true
+
+- name: Backup torrc file
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  command: mv /etc/tor/torrc /etc/tor/torrc.original
+
+#- name: Copy local torrc to /etc/tor
+#  become: true
+#  become_method: sudo
+#  copy:
+#    src: "{{ item }}"
+#    dest: "/etc/tor"
+#    owner: "{{ cuckoo_user }}"
+#    group: "{{ cuckoo_user }}"
+#    mode: 0644
+#  with_fileglob:
+#    - ../files/torrc
 
 # These lines will have to be configured in the /etc/tor/torrc file:
 # 
