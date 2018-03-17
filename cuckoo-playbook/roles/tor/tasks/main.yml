@@ -18,12 +18,12 @@
 - name: Add gpg key used to sign packages [ 1 / 2 ]
   become: true
   become_method: sudo
-  command: "gpg --keyserver keys.gnupg.net --recv A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
+  shell: "gpg --keyserver keys.gnupg.net --recv A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
 
 - name: Add gpg key used to sign packages [ 2 / 2 ]
   become: true
   become_method: sudo
-  command: "gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -"
+  shell: "gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -"
 
 - name: Install tor package
   become: true
@@ -44,25 +44,19 @@
 - name: Backup torrc file
   become: true
   become_method: sudo
-  become_user: "{{ cuckoo_user }}"
   command: mv /etc/tor/torrc /etc/tor/torrc.original
 
-#- name: Copy local torrc to /etc/tor
-#  become: true
-#  become_method: sudo
-#  copy:
-#    src: "{{ item }}"
-#    dest: "/etc/tor"
-#    owner: "{{ cuckoo_user }}"
-#    group: "{{ cuckoo_user }}"
-#    mode: 0644
-#  with_fileglob:
-#    - ../files/torrc
-
-# These lines will have to be configured in the /etc/tor/torrc file:
-# 
-# TransPort 192.168.56.1:9040
-# DNSPort 192.168.56.1:5353
+- name: Copy local torrc to /etc/tor
+  become: true
+  become_method: sudo
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/tor"
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0644
+  with_fileglob:
+    - ../files/torrc
 
 - name: Enable and restart Tor service
   become: true
