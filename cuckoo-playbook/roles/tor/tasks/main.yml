@@ -15,29 +15,29 @@
     state: present
     update_cache: false
 
-- name: Add gpg key used to sign packages
+- name: Add gpg key used to sign packages [ 1 / 2 ]
   become: true
   become_method: sudo
   command: "gpg --keyserver keys.gnupg.net --recv A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
 
-- name: Add gpg key used to sign packages
+- name: Add gpg key used to sign packages [ 2 / 2 ]
   become: true
   become_method: sudo
   command: "gpg --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | sudo apt-key add -"
-
-- name: Install deb.torproject.org-keyring package
-  become: true
-  become_method: sudo
-  apt:
-    pkg: "deb.torproject.org-keyring"
-    state: latest
-    update_cache: true
 
 - name: Install tor package
   become: true
   become_method: sudo
   apt:
     pkg: "tor"
+    state: latest
+    update_cache: true
+
+- name: Install deb.torproject.org-keyring package
+  become: true
+  become_method: sudo
+  apt:
+    pkg: "deb.torproject.org-keyring"
     state: latest
     update_cache: true
 
