@@ -63,7 +63,7 @@
 - name: Add Iptables rule [ 3 / 3 ]
   become: true
   become_method: sudo
-  command: "iptables -A POSTROUTING -t nat -o enp2s0 -j MASQUERADE"
+  command: "iptables -A POSTROUTING -t nat -o enp0s3 -j MASQUERADE"
 
 - name: Copy local Cuckoo configuration files to {{ cwd }}/conf
   become: true
