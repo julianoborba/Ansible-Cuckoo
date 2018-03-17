@@ -33,8 +33,6 @@
   debug:
     msg: "READ /data/moloch/README.txt and RUN sudo /data/moloch/bin/Configure"
 
-  # sudo /data/moloch/bin/Configure
-
 - name: Wait for /data/moloch/bin/Configure execution
   pause:
 
@@ -48,25 +46,18 @@
   become_method: sudo
   shell: "/data/moloch/bin/moloch_add_user.sh cuckoo cuckoo cuckoo --admin"
 
-- name: Enable and restart molochcapture service
+- name: Enable and restart Moloch capture service
   become: true
   become_method: sudo
   service:
     name: molochcapture
     state: restarted
-    enabled: yes
+    enabled: true
 
-- name: Enable and restart molochviewer service
+- name: Enable and restart Moloch viewer service
   become: true
   become_method: sudo
   service:
     name: molochviewer
     state: restarted
-    enabled: yes
-
-  # cat /data/moloch/logs/viewer.log
-  # cat /data/moloch/logs/capture.log
-
-  # http://localhost:8005
-  # user: cuckoo
-  # password: cuckoo
+    enabled: true

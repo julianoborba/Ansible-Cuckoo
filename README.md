@@ -39,7 +39,7 @@ You can customize your target Ubuntu distro under:
 Installation of the Cuckoo environment is done with the following steps:
 
 1. Clone this repository:
-`https://github.com/MalwareReverseBrasil/Cuckoo-Sandbox-Auto-Install-With-Ansible.git`
+`git clone https://github.com/MalwareReverseBrasil/Ansible-Cuckoo.git`
 2. Replace the placeholders in **cuckoo-playbook/inventories/production/hosts** with the correct ones for your installation, where:
     - **HOST** is the IP address of the server to install Cuckoo to. _Note: the comma after the HOST is not a typo. Ansible is expecting a list, so the comma is required_
     - **ADMIN** is a user with sudo privileges on the server

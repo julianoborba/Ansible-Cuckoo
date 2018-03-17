@@ -8,7 +8,7 @@
 - name: Start Cuckoo Rooter
   become: true
   become_method: sudo
-  shell: "nohup /opt/cuckoo/bin/cuckoo rooter >/dev/null 2>&1 &"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo rooter >/dev/null 2>&1 &"
 
 - name: Start Cuckoo Django Web Interface
   become: true
