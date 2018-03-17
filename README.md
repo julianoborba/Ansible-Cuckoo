@@ -57,7 +57,7 @@ By default, Cuckoo will be installed to `/opt/cuckoo` inside a virtual environme
 
 ## Usage
 
-Once the installation has completed, Suricata, Cuckoo API, Rooter, Sandbox and it's web interface will start up automatically.
+Once the installation has completed, Moloch, Suricata, Cuckoo API, Rooter, Sandbox and it's web interface will start up automatically.
 If you need to restart everything after some shutdown do:
 
     sudo /opt/cuckoo/bin/cuckoo rooter &
