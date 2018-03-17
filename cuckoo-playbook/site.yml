@@ -19,7 +19,7 @@
     - volatility
     - suricata
     - moloch
-    # - tor
+    - tor
     - network
     - date_time
     - start_up_cuckoo
