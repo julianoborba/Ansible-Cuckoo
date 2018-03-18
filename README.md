@@ -60,17 +60,17 @@ By default, Cuckoo will be installed to `/opt/cuckoo` inside a virtual environme
 Once the installation has completed, Moloch, Suricata, Cuckoo API, Rooter, Sandbox and it's web interface will start up automatically.
 If you need to restart everything after some shutdown do:
 
-    sudo /opt/cuckoo/bin/cuckoo rooter &
     sudo suricata -D --user=cuckoo --group=cuckoo --unix-socket=cuckoo.socket
     sudo systemctl start molochcapture.service
     sudo systemctl start molochviewer.service
-
+    sudo /opt/cuckoo/bin/cuckoo rooter &
+    
 As `cuckoo` user:
 
     . /opt/cuckoo/bin/activate
+    (cuckoo)$ cuckoo api --host 0.0.0.0 --port 8880 &
+    (cuckoo)$ cuckoo web runserver 0.0.0.0:8881 &
     (cuckoo)$ cuckoo -d &
-    (cuckoo)$ cuckoo web runserver 0.0.0.0:8080 &
-    (cuckoo)$ cuckoo api --host 0.0.0.0 --port 8081 &
     
 ## Find yourself
 
