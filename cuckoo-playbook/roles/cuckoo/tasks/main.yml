@@ -131,6 +131,9 @@
     - ../files/*
 
 - name: Copy local Cuckoo routing.conf file to {{ cwd }}/conf
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
   template:
     src: routing.conf.j2
     dest: "{{ cwd }}/conf"
