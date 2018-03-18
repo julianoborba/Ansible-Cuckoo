@@ -135,7 +135,7 @@
   become_method: sudo
   become_user: "{{ cuckoo_user }}"
   template:
-    src: routing.conf.j2
+    src: routing.conf
     dest: "{{ cwd }}/conf"
     owner: "{{ cuckoo_user }}"
     group: "{{ cuckoo_user }}"
