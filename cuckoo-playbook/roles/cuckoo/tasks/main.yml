@@ -130,6 +130,17 @@
   with_fileglob:
     - ../files/*
 
+- name: Copy local Cuckoo routing.conf file to {{ cwd }}/conf
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  template:
+    src: routing.conf
+    dest: "{{ cwd }}/conf"
+    owner: "{{ cuckoo_user }}"
+    group: "{{ cuckoo_user }}"
+    mode: 0644
+
 - name: Install Cuckoo signature modules
   become: true
   become_method: sudo

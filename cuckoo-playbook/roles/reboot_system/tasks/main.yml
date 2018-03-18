@@ -63,7 +63,7 @@
 - name: Add Iptables rule [ 3 / 3 ]
   become: true
   become_method: sudo
-  command: "iptables -A POSTROUTING -t nat -o enp0s3 -j MASQUERADE"
+  command: "iptables -A POSTROUTING -t nat -o {{ nic }} -j MASQUERADE"
 
 - name: Change owner of /var/run/suricata folder
   become: true
