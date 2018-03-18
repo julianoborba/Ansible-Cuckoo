@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 [routing]
 # Default network routing mode if none is specified by the user.
 # In none mode we don't do any special routing - the VM doesn't have any
@@ -16,7 +18,7 @@ route = internet
 # "dirty line" so to say. Note that, just like with the VPNs, this will allow
 # malicious traffic through your network. So think twice before enabling it.
 # (For example, to use eth0 as dirty line: "internet = eth0").
-internet = enp0s3
+internet = {{ nic }}
 
 # Routing table name/id for "dirty line" interface. If "dirty line" is
 # also default gateway in the system you can leave "main" value. Otherwise add

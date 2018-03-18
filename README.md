@@ -32,9 +32,9 @@ You may want to install Ansible with the [install_ansible.sh](install_ansible.sh
 
 You also may need log in via ssh first before run Ansible to ensure the ssh key of your remote machine into your system.
 
-You can customize your target Ubuntu distro under:
+You can customize your target Ubuntu distro and the server network interface under:
 
-    --extra-vars "distribution=artful"
+    --extra-vars "distribution=artful nic=enp0s3"
 
 Installation of the Cuckoo environment is done with the following steps:
 
@@ -47,7 +47,7 @@ Installation of the Cuckoo environment is done with the following steps:
 4. Run the following command inside cuckoo-playbook folder:
 
 ```
-ansible-playbook -i inventories/production site.yml --extra-vars "distribution=artful"
+ansible-playbook -i inventories/production site.yml --extra-vars "distribution=artful nic=enp0s3"
 ```
 
 By default, Cuckoo will be installed to `/opt/cuckoo` inside a virtual environment and a `cuckoo` user and group will be created. These values can be modified at group_vars file:
