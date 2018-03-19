@@ -81,6 +81,10 @@
   become_method: sudo
   shell: suricata -D --user=cuckoo --group=cuckoo --unix-socket=cuckoo.socket
 
+- name: Wait for Suricata IDS
+  pause:
+    minutes: 1
+
 - name: Start Moloch capture
   become: true
   become_method: sudo
@@ -91,25 +95,41 @@
   become_method: sudo
   shell: systemctl start molochviewer.service
 
-- name: Start Cuckoo Sandbox
-  become: true
-  become_method: sudo
-  become_user: "{{ cuckoo_user }}"
-  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo -d >/dev/null 2>&1 &"
+- name: Wait for Moloch
+  pause:
+    minutes: 1
 
 - name: Start Cuckoo Rooter
   become: true
   become_method: sudo
-  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo rooter >/dev/null 2>&1 &"
+  shell: "{{ cuckoo_dir }}/bin/cuckoo rooter &"
+
+- name: Wait for Rooter
+  pause:
+    minutes: 1
 
 - name: Start Cuckoo Django Web Interface
   become: true
   become_method: sudo
   become_user: "{{ cuckoo_user }}"
-  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo web runserver 0.0.0.0:8080 >/dev/null 2>&1 &"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo web runserver 0.0.0.0:8880 >/dev/null 2>&1 &"
+
+- name: Wait for Cuckoo Web
+  pause:
+    minutes: 1
 
 - name: Start Cuckoo API
   become: true
   become_method: sudo
   become_user: "{{ cuckoo_user }}"
-  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo api --host 0.0.0.0 --port 8081 >/dev/null 2>&1 &"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo api --host 0.0.0.0 --port 8881 >/dev/null 2>&1 &"
+
+- name: Wait for Cuckoo API
+  pause:
+    minutes: 1
+
+- name: Start Cuckoo Sandbox
+  become: true
+  become_method: sudo
+  become_user: "{{ cuckoo_user }}"
+  shell: "nohup {{ cuckoo_dir }}/bin/cuckoo -d >/dev/null 2>&1 &"
