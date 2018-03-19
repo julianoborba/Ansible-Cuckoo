@@ -15,6 +15,7 @@ This is a fully functional updated standalone Ansible script for building a Cuck
 - SSDeep
 - Tcpdump
 - M2Crypto
+- Tor
 
 ## Installation
 
