@@ -69,9 +69,9 @@ If you need to restart everything after some shutdown do:
 As `cuckoo` user:
 
     . /opt/cuckoo/bin/activate
-    (cuckoo)$ cuckoo api --host 0.0.0.0 --port 8880 &
-    (cuckoo)$ cuckoo web runserver 0.0.0.0:8881 &
-    (cuckoo)$ cuckoo -d &
+    (cuckoo)$ nohup cuckoo api --host 0.0.0.0 --port 8880 &
+    (cuckoo)$ nohup cuckoo web runserver 0.0.0.0:8881 &
+    (cuckoo)$ nohup cuckoo -d &
     
 ## Find yourself
 
