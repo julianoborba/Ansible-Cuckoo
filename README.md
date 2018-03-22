@@ -23,7 +23,7 @@ This installation process has been success tested against a fresh install of _Ub
 
 - openssh-server
 
-Also, ensure a cuckoo1.[ova/ovf] file in your ADMIN - detailed below - home folder.
+Also, ensure a **cuckoo1.[ova/ovf]** file in your ADMIN - detailed below - home folder.
 
 After the base OS install a dist-upgrade was conducted:
 
