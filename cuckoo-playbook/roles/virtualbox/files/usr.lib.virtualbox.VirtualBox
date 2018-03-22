@@ -1,0 +1,47 @@
+#include <tunables/global>
+
+/usr/lib/virtualbox/VirtualBox flags=(attach_disconnected) {
+    #include <abstractions/base>
+    #include <abstractions/gnome>
+    #include <abstractions/kde>
+    #include <abstractions/fonts>
+    #include <abstractions/audio>
+    #include <abstractions/user-download>
+
+    capability net_raw,
+    capability sys_ptrace,
+
+    deny /etc/nsswitch.conf r,
+    deny /etc/passwd r,
+    deny /etc/resolv.conf r,
+    deny /etc/fstab r,
+    deny /etc/drirc r,
+    deny /etc/udev/udev.conf r,
+    deny @{PROC}/** r,
+    deny /var/lib/dbus/machine-id r,
+    deny /sys/** r,
+
+    /dev/dri/card0 rw,
+    /dev/vboxdrv rw,
+    /dev/vboxdrvu rw,
+    /dev/sr0 r,
+    /dev/tty r,
+
+    @{HOME}/.VirtualBox/* rw,
+    "@{HOME}/VirtualBox VMs/" r,
+    "@{HOME}/VirtualBox VMs/**" rw,
+
+    @{HOME}/ r,
+    ## The .iso, .ova. or .ovf files should be there
+    @{HOME}/ r,
+    @{HOME}/** r,
+
+    /usr/bin/pulseaudio rix,
+    /usr/lib/pulse-2.0/** mrix,
+
+    /usr/lib/virtualbox/ r,
+    /usr/lib/virtualbox/** mrux,
+
+    /usr/share/virtualbox/nls/* r,
+    /usr/share/icons/gnome/index.theme rwk, # ??
+}

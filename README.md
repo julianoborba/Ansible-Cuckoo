@@ -31,18 +31,15 @@ After the base OS install a dist-upgrade was conducted:
 
 You may want to install Ansible with the [install_ansible.sh](install_ansible.sh) script, for Ubuntu only.
 
-You also may need log in via ssh first before run Ansible to ensure the ssh key of your remote machine into your system.
-
 You can customize your target Ubuntu distro and the server network interface under:
 
     --extra-vars "distribution=artful nic=enp0s3"
 
 Installation of the Cuckoo environment is done with the following steps:
 
-1. Clone this repository:
-`git clone https://github.com/MalwareReverseBrasil/Ansible-Cuckoo.git`
+1. Clone this repository;
 2. Replace the placeholders in **cuckoo-playbook/inventories/production/hosts** with the correct ones for your installation, where:
-    - **HOST** is the IP address of the server to install Cuckoo to. _Note: the comma after the HOST is not a typo. Ansible is expecting a list, so the comma is required_
+    - **HOST** is the IP address of the server to install Cuckoo to
     - **ADMIN** is a user with sudo privileges on the server
     - **PASSWORD** is the user _ADMIN_ password
 4. Run the following command inside cuckoo-playbook folder:
@@ -51,14 +48,14 @@ Installation of the Cuckoo environment is done with the following steps:
 ansible-playbook -i inventories/production site.yml --extra-vars "distribution=artful nic=enp0s3"
 ```
 
-By default, Cuckoo will be installed to `/opt/cuckoo` inside a virtual environment and a `cuckoo` user and group will be created. These values can be modified at group_vars file:
+By default, Cuckoo will be installed to `/opt/cuckoo` inside a virtual environment and a `cuckoo` user and group will be created. These values can be modified at **group_vars** file:
 
     cuckoo_user: 'cuckoo'
     cuckoo_dir: '/opt/cuckoo'
 
 ## Usage
 
-Once the installation has completed, Moloch, Suricata, Cuckoo API, Rooter, Sandbox and it's web interface will start up automatically.
+Once the installation has completed, Suricata, Moloch, Cuckoo Rooter alongside API, Web interface and Cuckoo itself will start up automatically.
 If you need to restart everything after some shutdown do:
 
     sudo suricata -D --user=cuckoo --group=cuckoo --unix-socket=cuckoo.socket
@@ -66,7 +63,7 @@ If you need to restart everything after some shutdown do:
     sudo systemctl start molochviewer.service
     sudo /opt/cuckoo/bin/cuckoo rooter &
     
-As `cuckoo` user:
+And as `cuckoo` user do:
 
     . /opt/cuckoo/bin/activate
     (cuckoo)$ nohup cuckoo api --host 0.0.0.0 --port 8880 &

@@ -149,3 +149,18 @@
   become_method: sudo
   become_user: "{{ cuckoo_user }}"
   command: "vboxmanage snapshot {{ cuckoo_vm_label }} restorecurrent"
+
+- name: Copy local AppArmor profile for VirtualBox to /etc/apparmor.d
+  become: true
+  become_method: sudo
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/apparmor.d"
+    mode: 0644
+  with_fileglob:
+    - ../files/usr.lib.virtualbox.VirtualBox
+
+- name: Apply AppArmor profile for VirtualBox
+  become: true
+  become_method: sudo
+  shell: aa-enforce /etc/apparmor.d/usr.lib.virtualbox.VirtualBox
