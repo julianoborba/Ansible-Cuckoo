@@ -56,19 +56,8 @@ By default, Cuckoo will be installed to `/opt/cuckoo` inside a virtual environme
 ## Usage
 
 Once the installation has completed, Suricata, Moloch, Cuckoo Rooter alongside API, Web interface and Cuckoo itself will start up automatically.
-If you need to restart everything after some shutdown do:
 
-    sudo suricata -D --user=cuckoo --group=cuckoo --unix-socket=cuckoo.socket
-    sudo systemctl start molochcapture.service
-    sudo systemctl start molochviewer.service
-    sudo /opt/cuckoo/bin/cuckoo rooter &
-    
-And as `cuckoo` user do:
-
-    . /opt/cuckoo/bin/activate
-    (cuckoo)$ nohup cuckoo api --host 0.0.0.0 --port 8880 &
-    (cuckoo)$ nohup cuckoo web runserver 0.0.0.0:8881 &
-    (cuckoo)$ nohup cuckoo -d &
+If you need to restart everything, enable `reboot_system` Ansible role by uncomment it, and comment the other roles, in the **site.yml** file and run the ansible-playbook again (we will enhance this in the future).
     
 ## Find yourself
 
